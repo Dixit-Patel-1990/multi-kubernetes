@@ -4,7 +4,8 @@ pipeline {
      environment {
         PATH = "/opt/homebrew/bin:$PATH"
         AWS_EB_CREDENTIALS_ID = 'AWS_INFO'
-        AWS_EB_REGION = 'us-west-1'
+        AWS_REGION = 'us-west-1'
+        CLUSTER_NAME = 'multi-k8s'
     }
 
     stages {
@@ -23,8 +24,10 @@ pipeline {
                     withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY', credentialsId: env.AWS_EB_CREDENTIALS_ID]]) {
                         sh '/opt/homebrew/bin/aws configure set aws_secret_access_key ${AWS_ACCESS_KEY_ID}'
                         sh '/opt/homebrew/bin/aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}'
-                        sh '/opt/homebrew/bin/aws configure set region $AWS_EB_REGION'
+                        sh '/opt/homebrew/bin/aws configure set region $AWS_REGION'
+                        sh '/opt/homebrew/bin/aws eks update-kubeconfig --region $AWS_REGION  --name $CLUSTER_NAME'
                         sh '/opt/homebrew/bin/kubectl apply -f k8s'
+                        sh '/opt/homebrew/bin/eksctl utils associate-iam-oidc-provider --cluster multi-k8s --approve'
                     }
                 }
             }
