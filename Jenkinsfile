@@ -29,16 +29,9 @@ pipeline {
                         sh '/opt/homebrew/bin/kubectl apply -f k8s'
                         sh '/opt/homebrew/bin/eksctl utils associate-iam-oidc-provider --cluster multi-k8s --approve'
                         sh 'curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json'
+                        sh 'aws iam create-policy --policy-name AWSIngressControllerPolicy --policy-document file://iam_policy.json
+'
                     }
-                }
-            }
-        }
-        stage('Helm Installation') {
-            steps {
-                script {
-                    sh 'curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3'
-                    sh 'chmod 700 get_helm.sh'
-                    sh './get_helm.sh'
                 }
             }
         }
