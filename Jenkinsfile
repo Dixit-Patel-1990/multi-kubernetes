@@ -30,7 +30,6 @@ pipeline {
                         sh '/opt/homebrew/bin/eksctl utils associate-iam-oidc-provider --cluster multi-k8s --approve'
                         sh 'curl -O https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json'
                         sh 'aws iam create-policy --policy-name AWSIngressControllerPolicy --policy-document file://iam_policy.json'
-'
                     }
                 }
             }
